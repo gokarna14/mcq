@@ -1,23 +1,49 @@
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import React, { useEffect, useState } from 'react';
+
+import AlwaysRender from './js/AlwaysRender';
+
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
+
+
+import NavBar from './js/navbar/NavBar';
+import Home from './js/home/Home';
+import About from './js/about/About';
+
 
 function App() {
+
+  const appName = 'MCQ Bank'
+
+  const [routing, setRouting] = useState([    // [path, component]
+  ['/', <Home appName={appName}/>],
+  ['/About', <About appName={appName}/>],
+  ])
+
+
+  const routeInfo = routing.map(
+      (i)=>{
+      return <Route exact path={i[0]} element={i[1]} ></Route>
+      }
+  )
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+              <AlwaysRender
+                appName={appName}
+              ></AlwaysRender>
+          <Routes>
+            {routeInfo}
+          </Routes>
+        </BrowserRouter>
+        
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     </div>
   );
 }
