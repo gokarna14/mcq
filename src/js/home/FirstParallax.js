@@ -3,10 +3,10 @@ import { Parallax } from "react-parallax";
 
 import { home } from "../../resources/db/media/img";
 import { spacing } from "../essentials/tools";
-
+import TextMovement from "../animations/TextMovement";
 
 const FirstParallax=(props)=>{
-
+ 
     return(
         <Parallax
             blur={4} 
@@ -22,9 +22,17 @@ const FirstParallax=(props)=>{
                             textAlign:'left'
                         }}
                         >
-                                <h1>WELCOME</h1>
-                                <h1>TO</h1>
-                                <h1>{props.appName} !</h1>                        
+                            <TextMovement
+                                content={<>
+                                    <h1>WELCOME</h1>
+                                    <h1>TO</h1>
+                                    <h1>{props.appName} !</h1>  
+                                </>}
+                                animate={{
+                                    x: [-200, 600, 0],
+                                    rotate: [0, 1, 0],
+                                }}
+                                ></TextMovement>  
                         </div>
                         {spacing}
                 {spacing}

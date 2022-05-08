@@ -11,19 +11,20 @@ import {
 } from 'react-router-dom';
 
 
-import NavBar from './js/navbar/NavBar';
 import Home from './js/home/Home';
 import About from './js/about/About';
+import Exam from './js/exam/Exam';
 
 
 function App() {
 
   const appName = 'MCQ Bank'
 
-  const [routing, setRouting] = useState([    // [path, component]
+  const routing = [    // [path, component]
   ['/', <Home appName={appName}/>],
   ['/About', <About appName={appName}/>],
-  ])
+  ['/Exam', <Exam appName={appName}/>]
+  ]
 
 
   const routeInfo = routing.map(

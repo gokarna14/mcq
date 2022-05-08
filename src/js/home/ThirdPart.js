@@ -18,7 +18,8 @@ const ThirdPart=()=>{
 
     return(
         <>
-            <h1>This is the part I am talking About</h1>
+        <hr />
+        <br />
             <button className="btn btn-primary"
                 onClick={buttonClicked}
             >

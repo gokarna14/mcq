@@ -1,28 +1,41 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+import Emphasize from "../animations/Emphasize";
+import LeftRight from "../animations/LeftRight";
+import { dummyList } from "../essentials/essentials";
 
 
 const SecondPart=()=>{
 
-    const variants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1 },
-      }
+
       
       return (
-        <motion.div
-        animate={{ y: [0, 100, 0] }}
-        transition={{ ease: "easeOut", duration: 2 }}
-        variants = {{
-          visible: { opacity: 1 },
-          hidden: { opacity: 0 },
-        }}
-      >
+        <>
+        <hr />
+        <br />
+            <LeftRight
+              left={
+                <h1>Welcome to ou</h1>
+              }
+              right={
+                <h1>r platform !</h1>
+              }
+              dis={300}
+            ></LeftRight>
 
-        here
+            <Emphasize
+              content={
+                <>
+                  <h3>Features</h3>
+                </>
+              }
+              onHover={true}
+            ></Emphasize>
 
-      </motion.div>
+              {dummyList}
+
+        </>
       )
 
 }

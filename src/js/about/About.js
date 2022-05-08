@@ -1,13 +1,13 @@
-import React from "react";
+    import React from "react";
 
 
-const About =(props)=>{
+    const About =(props)=>{
 
-    return(
-        <>
-            <h1>About: This is {props.appName}</h1>
-        </>
-    )
-}
+        return(
+            <>
+                <h1>About: This is {props.appName}</h1>
+            </>
+        )
+    }
 
-export default About;
+    export default About;

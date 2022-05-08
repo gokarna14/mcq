@@ -5,6 +5,11 @@ export const NavTopics = [
             class: "navbar-item",
             DSlass: "nav-link"
         },{
+            path: '/exam',
+            label: 'Exam',
+            class: "navbar-item",
+            DSlass: "nav-link"
+        },{
             path: '/about',
             label: 'About',
             class: "navbar-item",
