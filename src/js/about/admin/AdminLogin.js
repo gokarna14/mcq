@@ -59,6 +59,7 @@ const AdminLogin=()=>{
                 {!loggedIn && <form className="niceCenter"
                     onSubmit={handleLoginRequest}
                 >
+                <h2>Please provide your admin information</h2>
                     <div className="form-group">
                         <label for="adminEmail">Email address</label>
                         <input type="email" className="form-control" id="adminEmail" aria-describedby="emailHelp" placeholder="Enter email" 
@@ -86,7 +87,7 @@ const AdminLogin=()=>{
                         {/* <label className="form-check-label" for="exampleCheck1">Check me out</label> */}
                         <hr />
                     </div>
-                    <button type="submit" className="btn btn-primary">Submit{loading && 
+                    <button type="submit" className="btn btn-primary">Login{loading && 
                         <>
                             <div className="spinner-border text-light" role="status">
                                 <span className="sr-only"></span>

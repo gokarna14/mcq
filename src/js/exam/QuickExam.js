@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import Emphasize from "../animations/Emphasize";
+
 const QuickExam = (props)=>{
 
     const [numberOfQuestions, setNumberOfQuestions] = useState(10)
@@ -10,7 +12,7 @@ const QuickExam = (props)=>{
 
     const startQuickExam=()=>{
         props.examProps.setShowQuestion(true)
-        props.examProps.loadQuestions(numberOfQuestions)
+        props.examProps.loadQuestions(numberOfQuestions, true)
         props.examProps.setRenderResult_tf(false)
     }
 
@@ -31,11 +33,24 @@ const QuickExam = (props)=>{
             >
                 Start a quick MCQ
             </button>}
+            
         <hr />
         {
             props.examProps.showQuestion &&
             <>
+            <Emphasize
+                content={
+                    <i>
+                        <p>
+                            <small>
+                                A sample MCQ containing 10 questions asked from limited 35 questions
+                            </small>
+                        </p>
+                    </i>
+                }
+            ></Emphasize>
             
+
 
                 {props.examProps.renderQuestion}
 

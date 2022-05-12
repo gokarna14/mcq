@@ -15,6 +15,7 @@ import { shuffle } from "../essentials/essentials";
 import QuickExam from "./QuickExam"
 import CompeteExam from './CompeteExam'
 import MyProgress from './MyProgress'
+import NormalExam from "./NormalExam";
 
 
 const Exam =(props)=>{
@@ -29,9 +30,9 @@ const Exam =(props)=>{
 
 
 
-    const loadQuestions=(N=1)=>{
+    const loadQuestions=(N=10, quickExam=false)=>{
         console.log("Requesting Questions ...")
-        axios.post('../api/loadQuestions', {N:N}).then(res=>{
+        axios.post('../api/loadQuestions', {N:N, quickExam:quickExam}).then(res=>{
             console.log(res.data)
             setQuestions(res.data)
         }).catch(err=>{
@@ -90,7 +91,7 @@ const Exam =(props)=>{
                 </tr>
             </thead>
             <tbody>
-                    {result.map(
+                    {(result).map(
                         (i)=>{
                             return(<tr>
                                 <td>{i.question}</td>
@@ -103,6 +104,7 @@ const Exam =(props)=>{
                     )}
             </tbody>
         </table>
+        {result.length<=0 && <small> <hr></hr>You did not answer any questions !</small> }
        <h2>Final Score : {finalScore}</h2> 
     </div>
         
@@ -170,7 +172,8 @@ const Exam =(props)=>{
         finalScore: finalScore,
         resultRender: resultRender,
         showQuestion: showQuestion,
-        setShowQuestion: setShowQuestion
+        setShowQuestion: setShowQuestion,
+        universalProps: props.universalProps
         
     }
 
@@ -182,6 +185,12 @@ const Exam =(props)=>{
                 examProps={examProps}
             ></QuickExam>
         }, {
+            label: 'Take normal exam',
+            path: '/normalExam',
+            element: <NormalExam
+                examProps={examProps}
+        ></NormalExam>
+        },{
             label: 'Compete with others',
             path: '/competeExam',
             element: <CompeteExam

@@ -11,6 +11,7 @@ const AlwaysRender =(props)=>{
         <>
             <NavBar
                 appName={props.appName}
+                universalProps={props.universalProps}
             ></NavBar>
         </>
     )

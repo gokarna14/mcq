@@ -77,7 +77,12 @@ app.post('/api/loadQuestions', (req, res)=>{
     console.log("Request received to load questions.")
     console.log("Number: " + data.N)
 
-    sqlQuery('select * from questions order by rand() limit ' + data.N, res)
+    if (data.quickExam){
+        sqlQuery('select * from questions where question_id < 35 order by rand() limit ' + data.N, res)
+    }
+    else{
+        sqlQuery('select * from questions order by rand() limit ' + data.N, res)
+    }
 
 })
 

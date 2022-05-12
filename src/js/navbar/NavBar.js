@@ -12,7 +12,21 @@ import "./css/NavBar.css"
 const NavBar = (props)=>{
 
 
-    const navItems = NavTopics.map(
+    const navItems = (
+    [...NavTopics,
+    (props.universalProps.userLoggedIn ? {
+        path: './',
+        label: '| Logged on as ()',
+        class: "navbar-item",
+        DSlass: "nav-link"
+    } : {
+        path: '/loginSignUp',
+        label: '| Login/Sign Up',
+        class: "navbar-item",
+        DSlass: "nav-link"
+    })
+    ]
+    ).map(
         (i)=>{
             return <div>
                 <Link to={i.path} className='normalizeText'>
@@ -27,20 +41,25 @@ const NavBar = (props)=>{
     )
 
     return (
-        <div className='fullNav'>
-            <Parallax
-            blur={1} 
-            bgImage={navbar.background} 
-            bgImageAlt="the cat" 
-            strength={200}
-            bgImageSizes="100%"
-            >
-                <br />
-                <nav className="nav nav-tabs navbar-expand center justify-content-center">
-                    {navItems}
-                </nav>
-            </Parallax>
-        </div>
+        <>
+            <div className='fullNav'>
+                <Parallax
+                blur={1} 
+                bgImage={navbar.background} 
+                bgImageAlt="the cat" 
+                strength={200}
+                bgImageSizes="100%"
+                >
+                    <br />
+                    <nav className="nav nav-tabs navbar-expand justify-content-center">
+                        <>
+                            {navItems}
+                        </>
+                        
+                    </nav>
+                </Parallax>
+            </div>
+        </>
     ) 
 }
 
