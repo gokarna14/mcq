@@ -7,8 +7,6 @@ import { dummyList } from "../essentials/essentials";
 
 
 const SecondPart=()=>{
-
-
       
       return (
         <>

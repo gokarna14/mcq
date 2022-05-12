@@ -12,6 +12,7 @@
         "mysql": "^2.18.1",
         "react": "^18.1.0",
         "react-bootstrap": "^2.3.1",
+        "react-cookie": "^4.1.1",
         "react-dom": "^18.1.0",
         "react-parallax": "^3.3.0",
         "react-router-dom": "^6.3.0",
@@ -43,5 +44,5 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://localhost:4000/"
+    "proxy": "http://localhost:4000"
 }

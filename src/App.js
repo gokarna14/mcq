@@ -22,8 +22,8 @@ function App() {
 
   const routing = [    // [path, component]
   ['/', <Home appName={appName}/>],
-  ['/About', <About appName={appName}/>],
-  ['/Exam', <Exam appName={appName}/>]
+  ['/About/*', <About appName={appName}/>],
+  ['/Exam/*', <Exam appName={appName}/>]
   ]
 
 
