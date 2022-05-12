@@ -87,20 +87,67 @@ app.post('/api/getUserIP', (req, res)=>{
 
 })
 
+app.post('/api/requestLogin', (req, res)=>{
+    console.log('Request received for admin Login')
 
-function sqlQuery(sql, res){
-    return db.query(sql, function (err, result) {
-        if (err){
-            console.log(err)
-            console.log('Error in SQL Query')
-            console.log('-> ' + sql);
-        }   
-        else{         
-        console.log("Executed following SQL query:");
-        console.log('-> ' + sql);
-        res.send(result)
+    let data = req.body
+    console.log(req.body)
+    if (Object.keys(data).length === 0){
+        res.send("0")
+    }
+    else{
+        let sql = "select COUNT(*) from admin where ( "
+        
+        for (let i in data){
+            sql += i + " = '" + data[i] + "' and "
         }
-      });
+        sql = sql.slice(0, -4)
+        sql += ');'
+        
+        sqlQuery(sql, res, true)
+        
+    }
+})
+
+app.post('/api/singleElementReq', (req, res)=>{
+    console.log('Request received for single element')
+
+    let data = req.body
+    console.log(data)
+    
+})
+
+
+function sqlQuery(sql, res, count=false){
+    if (count){
+        return db.query(sql, function (err, result) {
+            if (err){
+                console.log(err)
+                console.log('Error in SQL Query')
+                console.log('-> ' + sql);
+            }   
+            else{         
+            console.log("Executed following SQL query:");
+            console.log('-> ' + sql); 
+            let c = result[0][ 'COUNT(*)' ]
+            res.send(String(c));
+            }
+          });
+    }
+    else{
+        return db.query(sql, function (err, result) {
+            if (err){
+                console.log(err)
+                console.log('Error in SQL Query')
+                console.log('-> ' + sql);
+            }   
+            else{         
+            console.log("Executed following SQL query:");
+            console.log('-> ' + sql); 
+            res.send(result)
+            }
+        });
+    }
 }
 
 

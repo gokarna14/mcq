@@ -18,6 +18,8 @@
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
         "reactstrap": "^9.0.2",
+        "sweetalert2": "^11.4.13",
+        "universal-cookie": "^4.0.4",
         "web-vitals": "^2.1.4"
     },
     "scripts": {

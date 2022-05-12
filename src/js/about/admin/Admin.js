@@ -1,5 +1,8 @@
 import React from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
+
+import AdminLogin from "./AdminLogin";
 
 
 const Admin=()=>{
@@ -10,6 +13,11 @@ const Admin=()=>{
         }).catch(err=>{
             console.log(err)
         })
+
+
+        // const cookies = new Cookies();
+        // cookies.set('myCat', 'Pacman', { path: '/about/admin' });
+        // console.log(cookies.get('myCatz'));
     }
 
 
@@ -17,16 +25,14 @@ const Admin=()=>{
     return(
         <>
         <br /><hr />
-            <form>
-                <button className="btn btn-primary" type="submit">
-                    Go to admin interface
-                </button>
-            </form>
-            <button
+            {
+                <AdminLogin></AdminLogin>
+            }
+            {/* <button
                 onClick={clicked}
                 >
                 Click Me
-            </button>
+            </button> */}
         </>
     )
 }
