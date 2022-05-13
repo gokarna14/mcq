@@ -33,6 +33,7 @@ function App() {
 
   const [userLoggedIn, setUserLoggedIn] = useState(false)
   const [userInf, setUserInf] = useState({})
+  const [loggedInUser, setLoggedInUser] = useState({})
 
   const appName = 'MCQ Bank'
 
@@ -48,7 +49,9 @@ function App() {
     setUserLoggedIn: setUserLoggedIn,
     userInf: userInf,
     setUserInf: setUserInf,
-    handleInputChange: handleInputChange
+    handleInputChange: handleInputChange,
+    loggedInUser: loggedInUser,
+    setLoggedInUser: setLoggedInUser
   }
 
   const routing = [    // [path, component]

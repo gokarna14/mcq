@@ -4,6 +4,7 @@ import { Parallax } from "react-parallax";
 import { home } from "../../resources/db/media/img";
 import { spacing } from "../essentials/tools";
 import TextMovement from "../animations/TextMovement";
+import Emphasize from "../animations/Emphasize";
 
 const FirstParallax=(props)=>{
  
@@ -15,6 +16,13 @@ const FirstParallax=(props)=>{
             strength={200}
             bgImageSizes="100%"
             >
+                <Emphasize
+                    content={props.universalProps.userLoggedIn && <i>
+                            Welcome, {props.universalProps.loggedInUser.fname }!
+                        </i>
+                        }
+                ></Emphasize>
+                        
                         {spacing}
                         {spacing}
                         <div className='niceCenter developers' 

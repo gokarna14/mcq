@@ -167,6 +167,25 @@ app.post('/api/presentOrNot', (req, res)=>{ //inf, what
     
 })
 
+app.post('/api/getUserInf', (req, res)=>{
+    console.log("Request received to access user information");
+    let data = req.body
+    console.log(data)
+
+    var sql = "select * from users where ( ",
+    toCheck = Object.keys(data)
+
+    for(let i in toCheck){
+        sql += toCheck[i] + " = '" + data[toCheck[i]] + "' and "
+    }
+    sql = sql.slice(0, -4)
+    sql += ");"
+
+    console.log(sql);
+
+    sqlQuery(sql, res)
+})
+
 function sqlQuery(sql, res='', count=false){
     if (count){
         console.log('Returning count');

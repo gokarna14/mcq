@@ -15,8 +15,8 @@ const NavBar = (props)=>{
     const navItems = (
     [...NavTopics,
     (props.universalProps.userLoggedIn ? {
-        path: './',
-        label: '| Logged on as ()',
+        path: '/loginSignUp',
+        label: '| Logged on as ' + props.universalProps.loggedInUser.fname,
         class: "navbar-item",
         DSlass: "nav-link"
     } : {

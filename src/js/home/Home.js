@@ -11,6 +11,7 @@ const Home =(props)=>{
         <>
             <FirstParallax
                 appName={props.appName}
+                universalProps={props.universalProps}
             ></FirstParallax>
             <SecondPart></SecondPart>
             <ThirdPart></ThirdPart>

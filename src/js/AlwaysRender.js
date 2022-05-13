@@ -13,9 +13,9 @@ const AlwaysRender =(props)=>{
                 appName={props.appName}
                 universalProps={props.universalProps}
             ></NavBar>
-            <LoginSignUpButton
+            {/* <LoginSignUpButton
                 universalProps={props.universalProps}
-            ></LoginSignUpButton>
+            ></LoginSignUpButton> */}
         </>
     )
 }

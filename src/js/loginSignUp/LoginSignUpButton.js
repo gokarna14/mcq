@@ -34,16 +34,48 @@ export default function LoginSignUpButton(props){
     const handleLoginRequest=(e)=>{
         e.preventDefault();
         setLoading(true)
-        console.log((haveAccount ? "LogIn request" : "Sign Up request"));
-        console.log(props.universalProps.userInf);
+        // console.log((haveAccount ? "LogIn request" : "Sign Up request"));
         if (haveAccount){
-            axios.post('/api/UserLogIn', props.universalProps.userInf).then(
-                res=>{
+            // axios.post('/api/UserLogIn', props.universalProps.userInf).then(
+            //     res=>{
                     
+            //     }
+            // ).catch(err=>{
+            //     console.log(err);
+            // })
+            axios.post('/api/presentOrNot', {...props.universalProps.userInf, what:'users'}).then(
+                res=>{
+                    if(res.data <= 0){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid credentials',
+                            text: 'No account exists with the given email and phone number',
+                            footer: ''
+                          })
+                    }
+                    else{
+                        // Logged In
+                        axios.post('/api/getUserInf', props.universalProps.userInf).then(
+                            res=>{
+                                console.log(res.data[0])
+                                props.universalProps.setLoggedInUser(res.data[0])
+                                props.universalProps.setUserLoggedIn(true)
+                            }
+                        ).catch(err=>{
+                            console.log(err);
+                        })
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Log In successful !',
+                            text: 'Welcome ' + props.universalProps.userInf.email,
+                            footer: ''
+                          })
+                    }
+                    setLoading(false)
                 }
-            ).catch(err=>{
-                console.log(err);
-            })
+                ).catch(err=>{
+                    console.log(err);
+                })
         }
         else{
             axios.post('/api/presentOrNot', {...props.universalProps.userInf, what:'users'}).then(
@@ -69,13 +101,14 @@ export default function LoginSignUpButton(props){
                             text: 'Account registered, now you can log into your account',
                             footer: ''
                           })
+                          setLoading(false)
                     }
+                    setLoading(false)
                 }
                 ).catch(err=>{
                     console.log(err);
                 })
             }
-            setLoading(false)
     }
 
     const loginForm = (<>
@@ -141,20 +174,23 @@ export default function LoginSignUpButton(props){
                                 <input required type="text" className="form-control" id="userFname" aria-describedby="userFname" placeholder="First Name" 
                                 onChange={(e)=>{props.universalProps.handleInputChange('fname', e.target.value)}}
                                 maxLength='15'
-                                title="Max characters = 15"
+                                title="Max characters = 15 | Only Alphabet is acceptable"
+                                pattern="[A-Za-z]+"
                             />
                             <label for="userMname">Middle Name</label>
                                 <input type="text" className="form-control" id="userMname" aria-describedby="userMname" placeholder="Middle Name" 
                                 onChange={(e)=>{props.universalProps.handleInputChange('mname', e.target.value)}}
                                 maxLength='15'
-                                title="Max characters = 15"
+                                title="Max characters = 15 | Only Alphabet is acceptable"
+                                pattern="[A-Za-z]+"
 
                             />
                             <label for="userLname">Last Name</label>
                                 <input required type="text" className="form-control" id="userLname" aria-describedby="userLname" placeholder="Last Name" 
                                 onChange={(e)=>{props.universalProps.handleInputChange('lname', e.target.value)}}
                                 maxLength='15'
-                                title="Max characters = 15"
+                                title="Max characters = 15 | Only Alphabet is acceptable"
+                                pattern="[A-Za-z]+"
                             />
 
                              <label for="userDob">Date of birth</label>
@@ -168,10 +204,11 @@ export default function LoginSignUpButton(props){
                                 title="Max characters = 50"
                             />
                             <label for="userPhoneNumber">Phone Number</label>
-                            <input required type="text" className="form-control" id="userPhoneNumber" aria-describedby="phoneNumber" placeholder="Phone Number" 
+                            <input required type="number" className="form-control" id="userPhoneNumber" aria-describedby="phoneNumber" placeholder="Phone Number" 
                                 onChange={(e)=>{props.universalProps.handleInputChange('phone_number', e.target.value)}}
                                 maxLength='12'
-                                title="Max characters = 12"
+                                title="Max characters = 12 | Only Numeric Values acceptable"
+                                pattern="[0-9]"
                             />
                         </div>
                         <div className="form-group">
