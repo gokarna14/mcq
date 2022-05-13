@@ -49,3 +49,36 @@
 .niceCenterExtreme {
     padding: 0% 20% 0% 20%;
 }
+
+.resLink {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.modalStyle {
+    padding: 0% 30% 0% 30%;
+}
+
+.sideBySide1 {
+    width: 600px;
+    display: table-cell;
+}
+
+.sideBySide2 {
+    display: table-cell;
+}
+
+.h1F {
+    display: table;
+}
+
+.h2F {
+    display: table-row;
+}

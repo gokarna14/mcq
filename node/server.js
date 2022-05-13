@@ -20,6 +20,10 @@ const db = mysql.createConnection({
     database: 'mcq',
 })
 
+const check ={
+    'users' : ['phone_number', 'email']
+}
+
 db.connect((err)=>{
     if(err){ 
         console.log(err)
@@ -101,7 +105,7 @@ app.post('/api/requestLogin', (req, res)=>{
         res.send("0")
     }
     else{
-        let sql = "select COUNT(*) from admin where ( "
+        let sql = "select count(*) from admin where ( "
         
         for (let i in data){
             sql += i + " = '" + data[i] + "' and "
@@ -114,17 +118,58 @@ app.post('/api/requestLogin', (req, res)=>{
     }
 })
 
-app.post('/api/singleElementReq', (req, res)=>{
-    console.log('Request received for single element')
+app.post('/api/UserLogIn', (req, res)=>{
+    console.log('Request received for user Log in')
 
     let data = req.body
-    console.log(data)
-    
+    console.log(req.body)
+})
+app.post('/api/UserSignUp', (req, res)=>{
+    console.log('Request received for user Sign Up')
+
+    let data = req.body
+    console.log(req.body)
+
+    var sql = "insert into users ("
+
+    for (let i in data){
+        sql += i + ' ,'
+    }
+    sql = sql.slice(0, -2)
+    sql += ") values ("
+    for (let i in data){
+        sql += "'" + data[i] + "' ,"
+    }
+    sql = sql.slice(0, -2)
+    sql += ");"
+    console.log(sql);
+    sqlQuery(sql);
 })
 
 
-function sqlQuery(sql, res, count=false){
+app.post('/api/presentOrNot', (req, res)=>{ //inf, what
+    console.log('Request received for present or not')
+
+    let data = req.body
+    console.log(data)
+
+    var sql = "select count(*) from " + data.what + " where ( ",
+    toCheck = check[data.what]
+
+    for(let i in toCheck){
+        sql += toCheck[i] + " = '" + data[toCheck[i]] + "' and "
+    }
+    sql = sql.slice(0, -4)
+    sql += ");"
+
+    sqlQuery(sql, res, true)
+
+    
+})
+
+function sqlQuery(sql, res='', count=false){
     if (count){
+        console.log('Returning count');
         return db.query(sql, function (err, result) {
             if (err){
                 console.log(err)
@@ -134,7 +179,8 @@ function sqlQuery(sql, res, count=false){
             else{         
             console.log("Executed following SQL query:");
             console.log('-> ' + sql); 
-            let c = result[0][ 'COUNT(*)' ]
+            let c = result[0][ 'count(*)' ]
+            console.log(c);
             res.send(String(c));
             }
           });
@@ -149,7 +195,9 @@ function sqlQuery(sql, res, count=false){
             else{         
             console.log("Executed following SQL query:");
             console.log('-> ' + sql); 
-            res.send(result)
+            if (res!==''){
+                res.send(result)
+            }
             }
         });
     }

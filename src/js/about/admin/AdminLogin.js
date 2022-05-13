@@ -16,7 +16,7 @@ const AdminLogin=()=>{
         let temp = loginInf
         temp[name] = input
         setLoginInf(temp)
-    }
+    } 
 
     const handleLoginRequest=(e)=>{
         e.preventDefault()

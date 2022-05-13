@@ -17,6 +17,18 @@ import Exam from './js/exam/Exam';
 import LoginSignUp from './js/loginSignUp/LoginSignUp';
 
 
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
+
 function App() {
 
   const [userLoggedIn, setUserLoggedIn] = useState(false)

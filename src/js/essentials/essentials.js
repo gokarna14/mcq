@@ -31,3 +31,11 @@ export const dummyList = [1, 2, 3, 4, 5, 6, 7, 8].map(
   
     return array;
   }
+
+export const benefitsOfLogIn=(
+  <>
+    <h1>Benefits of login</h1>
+    <p>ll</p>
+    <p>In essentials</p>
+  </>
+)
