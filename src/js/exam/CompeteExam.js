@@ -1,10 +1,23 @@
 import React from "react";
+import LoginSignUpToContinue from "../loginSignUp/LoginSignUpToContinue";
 
-const CompeteExam = ()=>{
+const CompeteExam = (props)=>{
 
     return(
         <>
-            <h1>CompeteExam</h1>
+            {
+                !props.examProps.universalProps.userLoggedIn && 
+                <>
+                    <LoginSignUpToContinue
+                        universalProps={props.examProps.universalProps}
+                    ></LoginSignUpToContinue>
+                </>
+            }{
+                props.examProps.universalProps.userLoggedIn && 
+                <>
+                    <h3>Welcome , {props.examProps.universalProps.loggedInUser.fname} 🔥</h3>
+                </>
+            }
         </>
     )
 

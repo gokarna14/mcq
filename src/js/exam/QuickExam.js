@@ -21,8 +21,6 @@ const QuickExam = (props)=>{
     }
 // Array.from(Array(10).keys())
 
-
-
         
     return(
         <>

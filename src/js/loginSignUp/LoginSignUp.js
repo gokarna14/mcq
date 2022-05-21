@@ -26,7 +26,8 @@ export default function LoginSignUp(props){
         dob: 'Date of Birth',
         password_: 'Password',
         ts: 'Last updated on',
-        phone_number: 'Phone Number'
+        phone_number: 'Phone Number',
+        gender: 'Gender'
     }
 
     const renderAccountInformation = 

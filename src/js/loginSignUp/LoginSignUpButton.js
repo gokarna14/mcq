@@ -193,10 +193,21 @@ export default function LoginSignUpButton(props){
                                 pattern="[A-Za-z]+"
                             />
 
-                             <label for="userDob">Date of birth</label>
+                            <label for="userDob">Date of birth</label>
                             <input required type="date" className="form-control" id="userDob" aria-describedby="dob" placeholder="Date of birth" 
                             onChange={(e)=>{props.universalProps.handleInputChange('dob', e.target.value)}}
                             />
+                            <label for="userGender">Gender</label>
+                            <select className="form-select"
+                                onChange={(e)=>{props.universalProps.handleInputChange('gender', e.target.value)}}
+                                required
+                                title="Select your gender"
+                            >
+                                <option value='' selected>--Select--</option>
+                                <option value="m">Male</option>
+                                <option value="f">Female</option>
+                                <option value="o">Others</option>
+                            </select>
                             <label for="userEmail">Email address</label>
                             <input type="email" className="form-control" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email" 
                                 onChange={(e)=>{props.universalProps.handleInputChange('email', e.target.value)}}
