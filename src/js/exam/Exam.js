@@ -33,7 +33,7 @@ const Exam =(props)=>{
     const loadQuestions=(N=10, quickExam=false)=>{
         console.log("Requesting Questions ...")
         axios.post('../api/loadQuestions', {N:N, quickExam:quickExam}).then(res=>{
-            console.log(res.data)
+            // console.log(res.data)
             setQuestions(res.data)
         }).catch(err=>{
             console.log(err)
