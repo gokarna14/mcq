@@ -1,17 +1,25 @@
 const express = require('express')
-const {spawn} = require('child_process');
-const { stringify } = require('querystring');
-var bodyParser = require('body-parser')
+// const {spawn} = require('child_process');
+// const { stringify } = require('querystring');
+// var bodyParser = require('body-parser')
 const mysql = require('mysql');
-const { appendFileSync } = require('fs');
+// const { appendFileSync } = require('fs');
 const fs = require('fs'); 
 const { parse } = require('csv-parse');
+const session = require('express-session');
 
 const app = express()
 const port = 4000
  
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use(session({
+    secret: 'key that will sign the cookie',
+    resave: 'false',
+    saveUninitialized: false,
+    httpOnly: true
+}))
+
 
 const db = mysql.createConnection({
     host : 'localhost',
@@ -33,6 +41,26 @@ db.connect((err)=>{
         console.log('MySQL connected'); 
     }
 }) 
+
+app.post("/api/session", (req, res)=>{
+    req.session.isAuth = true
+    // console.log(req.session.cookie);
+    console.log("Cookies Set !");
+    console.log("Session ID: " + req.session.id);
+    // console.log(req.session);
+    // console.log(req.body)
+    // db.query('insert into sessions (session_id, user_id)')
+    // res.send('Hello session !')
+})
+
+app.post("/api/firstEnterToServer", (req, res)=>{
+    req.session.isAuth = false
+    console.log("Cookies Set ! : First Enter");
+    console.log(req.sessionID);
+    res.send("HELLO")
+})
+
+ 
 
 app.post('/api/communicate', (req, res)=>{ 
     var data = req.body;
@@ -186,6 +214,12 @@ app.post('/api/getUserInf', (req, res)=>{
     sqlQuery(sql, res)
 })
 
+app.get('/session', (req, res)=>{
+    req.session.isAuth = true
+    console.log("Cookies Set: /Session !");
+    res.send("HELLO")
+})
+
 function sqlQuery(sql, res='', count=false){
     if (count){
         console.log('Returning count');
@@ -221,9 +255,6 @@ function sqlQuery(sql, res='', count=false){
         });
     }
 }
-
-
-
 
 
 

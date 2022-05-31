@@ -9,6 +9,7 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
+import axios from 'axios';
 
 
 import Home from './js/home/Home';
@@ -30,6 +31,9 @@ const customStyles = {
 
 
 function App() {
+  useEffect(() => {
+    axios.post("/api/firstEnterToServer")
+  });
 
   const [userLoggedIn, setUserLoggedIn] = useState(false)
   const [userInf, setUserInf] = useState({})
@@ -81,6 +85,13 @@ function App() {
         </BrowserRouter>
         
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+      <button
+        onClick={()=>{
+          axios.post("/api/session")
+        }}
+      >ClickMe</button>
+    
     </div>
   );
 }

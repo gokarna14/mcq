@@ -70,6 +70,7 @@ export default function LoginSignUpButton(props){
                             text: 'Welcome ' + props.universalProps.userInf.email,
                             footer: ''
                           })
+                          axios.post("/api/session", props.universalProps.loggedInUser)
                     }
                     setLoading(false)
                 }
