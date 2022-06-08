@@ -1,78 +1,49 @@
 import React, { useState } from "react";
 import axios from "axios";
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Link
+  } from 'react-router-dom';
 
 import Emphasize from "../animations/Emphasize";
+import McqSection from "./McqSection";
 
 const QuickExam = (props)=>{
 
-    const [numberOfQuestions, setNumberOfQuestions] = useState(10)
+    const examRequest=()=>{
 
-    const [onViewQuestion, setOnViewQuestion] = useState("")
-    const [questionIndex, setQuestionIndex] = useState(0)
-
-    const startQuickExam=()=>{
-        props.examProps.setShowQuestion(true)
-        props.examProps.loadQuestions(numberOfQuestions, true)
-        props.examProps.setRenderResult_tf(false)
     }
 
-    const showResult=()=>{
-        console.log("RESULT")
-    }
-// Array.from(Array(10).keys())
-
+    const mcqSection = (
+                <Routes>
+                    <Route
+                        exact
+                        path={"/QuickExamMCQ"}
+                        element={<McqSection
+                            type={'quick'}
+                        ></McqSection>}
+                    ></Route>
+                </Routes>
+    )
         
     return(
         <>
-        <br />
-        <br />
-            {!props.examProps.showQuestion && <button className="btn btn-primary"
-            onClick={startQuickExam}
-            >
-                Start a quick MCQ
-            </button>}
+                
+
+            <h1>Section of quick Exam.</h1>
+            <br />
             
-        <hr />
-        {
-            props.examProps.showQuestion &&
-            <>
-            <Emphasize
-                content={
-                    <i>
-                        <p>
-                            <small>
-                                A sample MCQ containing 10 questions asked from limited 35 questions
-                            </small>
-                        </p>
-                    </i>
-                }
-            ></Emphasize>
-            
+            <Link
+                to={'./QuickExamMCQ'} className='normalizeText'>
+                <span className='btn btn-outline-danger'>
+                    Take Normal Exam
+                </span>
+            </Link>
 
+            {mcqSection}
 
-                {props.examProps.renderQuestion}
-
-                <>
-                    <hr />
-                    <button className="btn btn-warning"
-                        onClick={()=>
-                            {
-                                props.examProps.generateResult()
-                                props.examProps.setShowQuestion(false)
-                                props.examProps.setRenderResult_tf(true)
-                                props.examProps.setShowExamOption(true)
-
-                            }
-                        }
-                    >
-                        Submit and See Result
-                    </button>
-                </>
-            </>
-        }
-        {props.examProps.resultRender}
-        {/* {props.examProps.renderResult && <h3>FINAL SCORE: {props.examProps.finalScore}/10</h3>} */}
-        <hr />
         </>
     )
 

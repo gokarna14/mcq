@@ -168,6 +168,7 @@ const sqlGeneratorInsert = (req, insertKeys)=>{
     })
 }
 
+const getSessionID = async(req)=>req.session.id;
 
 const sqlGeneratorSearch = (req, searchKeys)=>{
         // searchkeys: singleResult, table, searchKeys, toFindKey
@@ -203,7 +204,13 @@ const executeSqlQuery= async(sql)=>{
     })
 }
 
-const getSessionID = async(req)=>req.session.id;
+
+app.post('/api/loadQuestions', (req, res) => {
+    var data = req.body
+    res.send(`So you want questions for ${data.for}?`)
+})
+
+
 
 
 app.post('/api/communicate', (req, res) => {
@@ -212,32 +219,7 @@ app.post('/api/communicate', (req, res) => {
     res.send("Hello From NodeJS")
 })
 
-app.post('/api/sumOfTwoNumbers', (req, res) => {
-    var data = req.body;
-    console.log(data)
-    let sum = parseInt(data.a) + parseInt(data.b)
-    console.log(sum)
-    res.send(String(sum))
-})
 
-app.post('/api/loadQuestions', (req, res) => {
-    var data = req.body
-    console.log("Request received to load questions.")
-    console.log("Number: " + data.N)
-
-    if (data.quickExam) {
-        sqlQuery('select * from questions where question_id < 35 order by rand() limit ' + data.N, res)
-    } else {
-        sqlQuery('select * from questions order by rand() limit ' + data.N, res)
-    }
-
-})
-
-app.post('/api/getUserIP', (req, res) => {
-    console.log('Request received for IP address.')
-    console.log(req.headers['x-forwarded-for'])
-
-})
 
 app.post('/api/requestLogin', (req, res) => {
     console.log('Request received for admin Login')

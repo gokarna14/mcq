@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import LoginSignUpToContinue from "../loginSignUp/LoginSignUpToContinue";
 
 
 export default function NormalExam(props){
 
+    useEffect(() => {
+      props.examProps.resetExamProps();
+    }, [])
     const [numberOfQuestions, setNumberOfQuestions] = useState(50)
 
     const startNormalExam=()=>{
+
+        
+
         props.examProps.loadQuestions(numberOfQuestions)
 
 

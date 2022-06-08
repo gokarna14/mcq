@@ -116,11 +116,11 @@ function App() {
         
         <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
-      <button
+      {/* <button
         onClick={()=>{
           console.log(userInf);
         }}
-      >Log Info</button>
+      >Log Info</button> */}
     </div>
   );
 }

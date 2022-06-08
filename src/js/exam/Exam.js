@@ -28,177 +28,58 @@ const Exam =(props)=>{
     const [renderResult_tf, setRenderResult_tf] = useState(false)
     const [showQuestion, setShowQuestion] = useState(false)
 
-
-
-    const loadQuestions=(N=10, quickExam=false)=>{
-        console.log("Requesting Questions ...")
-        axios.post('../api/loadQuestions', {N:N, quickExam:quickExam}).then(res=>{
-            // console.log(res.data)
-            setQuestions(res.data)
-        }).catch(err=>{
-            console.log(err)
-        })
+    const resetExamProps=()=>{
+        setShowExamOption(true)
+        setQuestions([])
+        setResponses({})
+        setResult([])
+        setFinalScore(0)
+        setRenderResult_tf(false)
+        setShowQuestion(false)
     }
-
-    const generateResult =()=>{
-        let rightAns = {}, qns = {}
-        for(let i=0; i<questions.length;i++){
-            qns[questions[i].question_id] = questions[i].question
-            rightAns[questions[i].question_id] = questions[i].right_answer
-        }
-        // console.log(qns)
-        // console.log(rightAns)
-        // console.log(responses)
-
-        let score = 0, tempResult = []
-
-        for(let i in responses){
-            var toPush = {
-                question: qns[i],
-                rightAns: rightAns[i],
-                userResponse: responses[i]
-            }
-            if(responses[i] === rightAns[i]){
-                score++
-                toPush['Right/Wrong'] = "✅ 😍"
-            }
-            else{
-                toPush['Right/Wrong'] = "❌ 🙁"
-            }
-            tempResult.push(toPush)
-        }
-        
-        setFinalScore(score)
-        setResult(tempResult)
-        // setRenderResult_tf(true)
-        
-    }
-
-    const resultRender = renderResult_tf && <div className="niceCenter">
-    <br />
-    <hr />
-        <table className="table"
-            style={{
-                textAlign: 'left'
-            }}
-        >
-            <thead>
-                <tr>
-                        <th>Question</th>
-                        <th>Right Answer</th>
-                        <th>Your Answer</th>
-                        <th>Right/Wrong</th>
-                </tr>
-            </thead>
-            <tbody>
-                    {(result).map(
-                        (i)=>{
-                            return(<tr>
-                                <td>{i.question}</td>
-                                <td>{i.rightAns}</td>
-                                <td>{i.userResponse}</td>
-                                <td>{i['Right/Wrong']}</td>
-                            </tr>
-                            )
-                        }
-                    )}
-            </tbody>
-        </table>
-        {result.length<=0 && <small> <hr></hr>You did not answer any questions !</small> }
-       <h2>Final Score : {finalScore}</h2> 
-    </div>
-        
-
-
-    const renderQuestion = (questions === [] ? [] : questions).map(
-        (questionSet)=>{
-            return(
-                <form
-                style={{
-                    textAlign: 'left'
-                }}
-                className='niceCenter'
-                >
-                    <hr />
-                    <h5>
-                        {questions.indexOf(questionSet) +1}. {questionSet.question}
-                    </h5>
-                    <br />
-                    {
-                        shuffle([questionSet.right_answer, 
-                            questionSet.option1, 
-                            questionSet.option2, 
-                            questionSet.option3]).map(
-                            (i)=>{
-                                return(
-                                    <div className="form-check form-check-inline">
-                                        <input className="form-check-input" 
-                                            type="radio" 
-                                            name={"inlineRadioOptions" + {i}}
-                                            id="inlineCheckbox1" 
-                                            value={i}
-                                            onChange={(e)=>{
-                                                let temp = responses
-                                                temp[questionSet.question_id] = e.target.value
-                                                setResponses(temp)
-                                                console.log(temp)
-                                            }}
-                                            />
-                                        <label className="form-check-label">
-                                            {i}
-                                        </label>
-                                    </div>
-                                )
-                            }
-                        )
-                    }
-                    <br />
-                    <hr />
-                    
-                </form>
-            )
-        }
-    )
-
+    
     const examProps={
         questions: questions,
         setResponses: setResponses,
         setShowExamOption: setShowExamOption,
-        loadQuestions: loadQuestions,
-        renderQuestion: renderQuestion,
-        generateResult: generateResult,
+        // loadQuestions: loadQuestions,
+        // renderQuestion: renderQuestion,
+        // generateResult: generateResult,
         setRenderResult_tf: setRenderResult_tf,
         renderResult_tf: renderResult_tf,
         finalScore: finalScore,
-        resultRender: resultRender,
+        // resultRender: resultRender,
         showQuestion: showQuestion,
         setShowQuestion: setShowQuestion,
+        resetExamProps: resetExamProps,
         universalProps: props.universalProps
         
     }
 
+
+
     const examTopics=[
         {
             label: 'Take Quick Exam',
-            path: '/quickExam',
+            path: '/quickExam/*',
             element: <QuickExam
                 examProps={examProps}
             ></QuickExam>
         }, {
             label: 'Take normal exam',
-            path: '/normalExam',
+            path: '/normalExam/*',
             element: <NormalExam
                 examProps={examProps}
         ></NormalExam>
         },{
             label: 'Compete with others',
-            path: '/competeExam',
+            path: '/competeExam/*',
             element: <CompeteExam
                 examProps={examProps}
         ></CompeteExam>
         }, {
             label: 'My progress',
-            path: '/myProgress',
+            path: '/myProgress/*',
             element: <MyProgress
                 examProps={examProps}
         ></MyProgress>
