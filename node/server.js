@@ -20,9 +20,10 @@ app.use(express.json())
 
 
 const port = 4000
-const {
-    SESSION_LIFETIME = 1000 * 60 * 60
-} = process.env
+
+const table_names = {
+    active_sessions: 'active_sessions'
+}
 
 
 const db = mysql.createConnection({
@@ -57,26 +58,152 @@ db.connect((err) => {
     }
 })
 
-app.post("/api/sessionRemoveAuth", (req, res) => {
+app.post("/api/sessionRemoveAuth", async (req, res) => {
     console.log(req.session.id + '\nDestroyed !');
+    await executeSqlQuery(`delete from active_sessions where session_id = '${req.session.id}'`);
     req.session.destroy();
 })
 
-app.post("/api/sessionAuth", (req, res) => {
-    console.log(req.session.id + '\nSession Authenticated !');
-    console.log(req.body.userInf);
+app.post("/api/sessionAuth", async (req, res) => {
     
-    for (let ele in req.body.userInf){
-        console.log(ele);
-    }
+    console.log('\nAuthenticating Session:');
+    let data = req.body;
+    
+    let sql =  await sqlGeneratorSearch(req, {
+        singleResult: true,
+        table: 'users',
+        searchKeys: data.userInf,
+        toFindKey: ['user_id']
+    });
+    // console.log(sql);
+    let user_id = await executeSqlQuery(sql);
+    user_id = parseInt(user_id[0]['user_id']);
+    
+    await executeSqlQuery(`delete from active_sessions where user_id = '${user_id}';`)
+
+    let sql_insert = await sqlGeneratorInsert(req, {
+        table: 'active_sessions',
+        insertKeyValue: {
+            'session_id': req.session.id,
+            'user_id': user_id
+        }
+    })
+
+
+    await executeSqlQuery(sql_insert);
+
+    console.log(req.session.id + '\nSession Authenticated !');
+
+
+
     res.send('Session ID: ' + req.session.id);
 })
 
 app.post("/api/sessionInfo", (req, res) => {
     console.log(req.session.id + '\nRequest for session info');
 })
+app.post("/api/checkActiveSession", async (req, res) => {
+
+    var sessionId = await getSessionID(req);
+    let sql = await sqlGeneratorSearch(req, {
+        singleResult: true,
+        table: 'active_sessions',
+        searchKeys: {
+            session_id: sessionId
+        },
+        toFindKey: ['*']
+    });
+
+    let queryRes = await executeSqlQuery(sql); 
+    if (queryRes.length === 0){
+        res.send('-69');
+    }
+    else{
+
+        let sql_user_id =  await sqlGeneratorSearch(req, {
+            singleResult: true,
+            table: 'active_sessions',
+            searchKeys: {
+                session_id: sessionId
+            },
+            toFindKey: ['user_id']
+        });
+        let user_id = await executeSqlQuery(sql_user_id);
+        user_id = parseInt(user_id[0]['user_id']);
 
 
+        res.send(String(user_id));
+    }
+
+})
+app.post('/api/UserLogInWithID', async (req, res) => {
+    console.log('\n\nRequest received for user Log in with ID')
+    let user_id = req.body['user_id'],
+    sql = `select * from users where user_id = '${user_id}';` 
+
+    let queryRes = await executeSqlQuery(sql);
+    console.log('\n\n');
+
+    res.send(queryRes);
+
+})
+
+const sqlGeneratorInsert = (req, insertKeys)=>{
+    return new Promise ((resolve, reject)=>{
+        var sql =  `insert into ${insertKeys.table} (`
+
+        var keyValue = insertKeys.insertKeyValue;
+
+        Object.keys(keyValue).forEach((key)=>{
+            sql += `${key}, `;
+        })
+        sql = sql.slice(0, -2);
+        sql += ') values (';
+        Object.keys(keyValue).forEach((key)=>{
+            sql += `'${keyValue[key]}', `
+        })
+        sql = sql.slice(0, -2);
+        sql += ');'
+        resolve(sql);
+    })
+}
+
+
+const sqlGeneratorSearch = (req, searchKeys)=>{
+        // searchkeys: singleResult, table, searchKeys, toFindKey
+    return new Promise ((resolve, reject)=>{
+        if (searchKeys.singleResult){
+            var sql =  `select ${searchKeys.toFindKey[0]} from ${searchKeys.table} where `
+            for (var keys in searchKeys.searchKeys){
+                sql += `${keys} = '${searchKeys.searchKeys[keys]}' and `
+            }
+            sql = sql.slice(0, -4);
+            sql += ';'
+        }
+        resolve(sql);
+    })
+
+}
+
+const executeSqlQuery= async(sql)=>{
+    return new Promise((resolve, reject)=>{
+        db.query(sql, async (err, result)=>{
+            if (err) {
+                // reject(err);
+                console.log('\n\nError in SQL Query')
+                console.log('-> ' + sql);
+            } else {
+                console.log("\n\nExecuted following SQL query:");
+                console.log('-> ' + sql);
+                let res = await result;
+                // console.log(c);
+                resolve(res);
+            }
+        })
+    })
+}
+
+const getSessionID = async(req)=>req.session.id;
 
 
 app.post('/api/communicate', (req, res) => {
@@ -91,35 +218,6 @@ app.post('/api/sumOfTwoNumbers', (req, res) => {
     let sum = parseInt(data.a) + parseInt(data.b)
     console.log(sum)
     res.send(String(sum))
-})
-
-app.post('/api/loadCSV', (req, res) => {
-    console.log("Request To load CSV: ")
-    var data = req.body
-    console.log(data)
-
-    var csvData = [],
-        count = 0;
-    fs.createReadStream('../src/resources/csv/' + data.what + '.csv')
-        .pipe(parse({ delimiter: '/t' }))
-        .on('data', function(csvrow) {
-            // if (count++ === 0){
-            //     console.log(csvrow)
-            // }
-            csvData.push(csvrow);
-        })
-        .on('end', function() {
-            console.log(sqlQuery('SELECT * FROM questions'))
-            for (let i in csvData) {
-                if (i !== 0) {
-                    var arr = (csvData[i][0].split(',')),
-                        sql = "INSERT INTO questions VALUES "
-                }
-            }
-            res.send(csvData[0])
-        });
-
-
 })
 
 app.post('/api/loadQuestions', (req, res) => {
@@ -162,12 +260,7 @@ app.post('/api/requestLogin', (req, res) => {
     }
 })
 
-app.post('/api/UserLogIn', (req, res) => {
-    console.log('Request received for user Log in')
 
-    let data = req.body
-    console.log(req.body)
-})
 app.post('/api/UserSignUp', (req, res) => {
     console.log('Request received for user Sign Up')
 
@@ -263,7 +356,5 @@ function sqlQuery(sql, res = '', count = false) {
         });
     }
 }
-
-
 
 app.listen(port, () => console.log(`Example app listening on port ${port} !`))

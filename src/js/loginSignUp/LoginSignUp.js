@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import LoginSignUpButton from "./LoginSignUpButton";
 import SideBySide from "../templates/SideBySide";
@@ -15,6 +16,7 @@ export default function LoginSignUp(props){
     const logOut =()=>{
         props.universalProps.setUserLoggedIn(false)
         props.universalProps.setLoggedInUser({})
+        axios.post("/api/sessionRemoveAuth")
     }
 
     const tableCols = {

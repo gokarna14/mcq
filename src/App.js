@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 import AlwaysRender from './js/AlwaysRender';
 
@@ -32,8 +33,37 @@ const customStyles = {
 
 function App() {
   useEffect(() => {
-    axios.post("/api/firstEnterToServer")
-  });
+    axios.post("/api/checkActiveSession")
+    .then(
+      res=>{
+        return res.data;
+      }
+    )
+    .then(
+      user_id => {
+        // eslint-disable-next-line eqeqeq
+        if (user_id != '-69'){
+          // console.log(user_id);
+          axios.post('/api/UserLogInWithID', {user_id: user_id}).then(
+            res=>{
+              return res.data[0];
+            }
+          )
+          .then(
+            async (userInformation) =>{
+              setUserInf(userInformation);
+              setLoggedInUser(userInformation);
+              setUserLoggedIn(true);
+            }
+            )
+            .catch(err=>{
+              console.log(err);
+            })
+        }
+      }
+    )
+  }, []);
+  useEffect(()=>{});
 
   const [userLoggedIn, setUserLoggedIn] = useState(false)
   const [userInf, setUserInf] = useState({})
@@ -88,10 +118,9 @@ function App() {
 
       <button
         onClick={()=>{
-          axios.post("/api/session")
+          console.log(userInf);
         }}
-      >ClickMe</button>
-    
+      >Log Info</button>
     </div>
   );
 }

@@ -36,13 +36,6 @@ export default function LoginSignUpButton(props){
         setLoading(true)
         // console.log((haveAccount ? "LogIn request" : "Sign Up request"));
         if (haveAccount){
-            // axios.post('/api/UserLogIn', props.universalProps.userInf).then(
-            //     res=>{
-                    
-            //     }
-            // ).catch(err=>{
-            //     console.log(err);
-            // })
             axios.post('/api/presentOrNot', {...props.universalProps.userInf, what:'users'}).then(
                 res=>{
                     if(res.data <= 0){
@@ -70,7 +63,7 @@ export default function LoginSignUpButton(props){
                             text: 'Welcome ' + props.universalProps.userInf.email,
                             footer: ''
                           })
-                          axios.post("/api/session", props.universalProps.loggedInUser)
+                        axios.post("/api/sessionAuth", {userInf: props.universalProps.userInf});
                     }
                     setLoading(false)
                 }
