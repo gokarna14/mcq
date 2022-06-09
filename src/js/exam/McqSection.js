@@ -10,20 +10,23 @@ const McqSection=(props)=>{
     const [modalIsOpen, setIsOpen] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [response, setResponse] = useState({})
+    const [fullResponse, setFullResponse] = useState([])
     const [showResult, setShowResult] = useState(false);
     const [displayLoadingModal, setDisplayLoadingModal] = useState(false)
-    const [responseID, setResponseID] = useState(null)
+    // const [responseID, setResponseID] = useState(null)
+    const [score, setScore] = useState(0)
 
     function openModal() {
         setIsOpen(true);
         setResponse({});
         setQuestions([]);
         axios.post('/api/loadQuestions', {
-            for: props.type
+            for: props.type,
+            limit: props.numberOfQuestions
         })
         .then(
             res=>{
-                console.log(res.data);
+                // console.log(res.data);
                 setQuestions(res.data);
                 // console.log(props.universalProps);
                 // console.log(questions);
@@ -47,13 +50,15 @@ const McqSection=(props)=>{
                 async (res)=>{
                     var response_id = await res.data;
                     console.log(response_id);
-                    setResponseID(response_id);
-                    axios.post('/api/getResponse', {
+                    // setResponseID(response_id);
+                    axios.post('/api/getResponseAndScore', {
                         userInf: props.universalProps.userInfuserInf,
                         all_response_id: response_id
                     }).then(
                         response=>{
-                            console.log(response.data); // todo: generate result
+                            // console.log(response.data); // todo: generate result
+                            setFullResponse(response.data.response);
+                            setScore(response.data.score)
                         }
                     )
                 }
@@ -166,18 +171,24 @@ const McqSection=(props)=>{
             }
     </div>
     
-    const resultDisplay = 
+    const resultDisplay = // get this mf into separate js
     <>
             {
-                questions.map(
-                    questionSet=>{
+                fullResponse.map(
+                    responseSet=>{
                         return(
                             <>
-                                {questionSet.question}
+                                <b>{responseSet.question}</b>
+                                
                                 <br />
                                 <i>Your Response: </i>
-                                {response[questionSet.question_id] ? response[questionSet.question_id] : 'Did not answer'}
-
+                                {responseSet.answered_option}
+                                <br />
+                                <i>Correct Answer: </i>
+                                {responseSet.right_answer}
+                                <br />
+                                <h1>{responseSet.correct}</h1>
+                                
                                 <hr />
                             </>
                         )
@@ -225,6 +236,7 @@ const McqSection=(props)=>{
             >
                 <hr />
                     <h1>Result</h1>
+                    <h4>Your Final Score: {score} out of {props.numberOfQuestion}</h4>
                     <button
                         onClick={()=>{setShowResult(false)}}
                     >close</button>

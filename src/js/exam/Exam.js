@@ -52,7 +52,10 @@ const Exam =(props)=>{
         showQuestion: showQuestion,
         setShowQuestion: setShowQuestion,
         resetExamProps: resetExamProps,
-        universalProps: props.universalProps
+        universalProps: props.universalProps,
+        numberOfQuestions:{
+            quickExam: 8,
+        }
         
     }
 

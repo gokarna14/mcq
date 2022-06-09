@@ -24,6 +24,9 @@ const QuickExam = (props)=>{
                         element={<McqSection
                             type={'quick'}
                             universalProps={props.examProps.universalProps}
+                            numberOfQuestion={
+                                props.examProps.numberOfQuestions.quickExam
+                            }
                         ></McqSection>}
                     ></Route>
                 </Routes>
@@ -39,7 +42,7 @@ const QuickExam = (props)=>{
             <Link
                 to={'./QuickExamMCQ'} className='normalizeText'>
                 <span className='btn btn-outline-danger'>
-                    Take Normal Exam
+                    Take Quick Exam
                 </span>
             </Link>
 

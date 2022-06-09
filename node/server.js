@@ -259,6 +259,18 @@ app.post('/api/loadQuestions', async (req, res) => {
             order_by: 'rand()' 
         })
     }
+    else {
+        sql = await sqlGeneratorSearch(req, {
+            singleResult: false,
+            table: 'questions',
+            // searchKeys:{
+            //     'question_id' : ' < 35'
+            // },
+            toFindKey:['question_id', 'question', 'right_answer', 'option1','option2','option3'],
+            limit: data.numberOfQuestions,
+            order_by: 'rand()' 
+        })
+    }
 
     var queryRes = await executeSqlQuery(sql);
 
@@ -350,7 +362,7 @@ app.post('/api/requestLogin', async (req, res) => {
     }
 })
 
-app.post('/api/getResponse', async(req, res)=>{
+app.post('/api/getResponseAndScore', async(req, res)=>{
     var data = await req.body;
     console.log(`\nGenerating user response\n`);
     // console.log(data);
@@ -371,8 +383,13 @@ app.post('/api/getResponse', async(req, res)=>{
 
 
     var queryRes = await executeSqlQuery(sql);
+    var queryRes2 = await executeSqlQuery( `select count(*) count from ( ${sql.slice(0,-1)} ) temp_table where temp_table.correct = 'true';`);
 
-    res.send(queryRes)
+
+    res.send({
+        score: queryRes2[0].count,
+        response: queryRes
+    })
 
 
 })
@@ -473,5 +490,53 @@ function sqlQuery(sql, res = '', count = false) {
         });
     }
 }
+
+
+
+
+
+
+// Exam Progress APIs
+
+app.post('/api/userExamRecords', async (req, res)=>{
+    var data = req.body;
+
+    var sql = await sqlGeneratorSearch(req, 
+        {
+            singleResult: false,
+            table: 'all_response',
+            searchKeys:{
+                'user_id' : ` = '${data.userInf.user_id}'`
+            },
+            // toFindKey:['question_id', 'question', 'right_answer', 'option1','option2','option3'],
+            // limit: 8,
+            // order_by: 'rand()' 
+        })
+
+    var queryRes = await executeSqlQuery(sql);
+    
+    // var queryRes1 = await executeSqlQuery(sql); 
+    
+    var allResponse = []
+
+    
+    for (let responseKeyValue of queryRes){
+        sql = `select count(*) count from (select * from question_answer where all_response_id = '${responseKeyValue.all_response_id}' and answered_question = '0') x;`
+        let temp = responseKeyValue
+        let queryRes1 = await executeSqlQuery(sql);
+
+        temp['score'] = queryRes1[0].count;
+        allResponse.push(temp);
+    }
+    
+    res.send(allResponse);
+})
+
+
+
+
+
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port} !`))
