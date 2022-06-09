@@ -52,7 +52,9 @@ export default function LoginSignUpButton(props){
                             res=>{
                                 console.log(res.data[0])
                                 props.universalProps.setLoggedInUser(res.data[0])
+                                props.universalProps.setUserInf(res.data[0])
                                 props.universalProps.setUserLoggedIn(true)
+                                axios.post("/api/sessionAuth", {userInf: res.data[0]});
                             }
                         ).catch(err=>{
                             console.log(err);
@@ -63,7 +65,7 @@ export default function LoginSignUpButton(props){
                             text: 'Welcome ' + props.universalProps.userInf.email,
                             footer: ''
                           })
-                        axios.post("/api/sessionAuth", {userInf: props.universalProps.userInf});
+                        
                     }
                     setLoading(false)
                 }

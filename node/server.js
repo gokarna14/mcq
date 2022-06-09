@@ -67,17 +67,20 @@ app.post("/api/sessionRemoveAuth", async (req, res) => {
 app.post("/api/sessionAuth", async (req, res) => {
     
     console.log('\nAuthenticating Session:');
-    let data = req.body;
+    let data = await req.body;
+    console.log(data.userInf);
     
-    let sql =  await sqlGeneratorSearch(req, {
-        singleResult: true,
-        table: 'users',
-        searchKeys: data.userInf,
-        toFindKey: ['user_id']
-    });
+    // let sql =  await sqlGeneratorSearch(req, {
+    //     singleResult: true,
+    //     table: 'users',
+    //     searchKeys: data.userInf,
+    //     toFindKey: ['user_id'],
+    //     session: {}
+    // });
     // console.log(sql);
-    let user_id = await executeSqlQuery(sql);
-    user_id = parseInt(user_id[0]['user_id']);
+    // let user_id = await executeSqlQuery(sql);
+    let user_id = parseInt(data.userInf.user_id);
+
     
     await executeSqlQuery(`delete from active_sessions where user_id = '${user_id}';`)
 
@@ -85,8 +88,9 @@ app.post("/api/sessionAuth", async (req, res) => {
         table: 'active_sessions',
         insertKeyValue: {
             'session_id': req.session.id,
-            'user_id': user_id
-        }
+            'user_id': user_id,
+        },
+        session: {}
     })
 
 
@@ -111,7 +115,8 @@ app.post("/api/checkActiveSession", async (req, res) => {
         searchKeys: {
             session_id: sessionId
         },
-        toFindKey: ['*']
+        toFindKey: ['*'],
+        session:{}
     });
 
     let queryRes = await executeSqlQuery(sql); 
@@ -124,8 +129,9 @@ app.post("/api/checkActiveSession", async (req, res) => {
             singleResult: true,
             table: 'active_sessions',
             searchKeys: {
-                session_id: sessionId
+                session_id: sessionId,
             },
+            session: {},
             toFindKey: ['user_id']
         });
         let user_id = await executeSqlQuery(sql_user_id);
@@ -172,15 +178,48 @@ const getSessionID = async(req)=>req.session.id;
 
 const sqlGeneratorSearch = (req, searchKeys)=>{
         // searchkeys: singleResult, table, searchKeys, toFindKey
+    var sql = '';
     return new Promise ((resolve, reject)=>{
-        if (searchKeys.singleResult){
-            var sql =  `select ${searchKeys.toFindKey[0]} from ${searchKeys.table} where `
+        if (searchKeys.singleResult && searchKeys.session){
+            sql =  `select ${searchKeys.toFindKey[0]} from ${searchKeys.table} where `
             for (var keys in searchKeys.searchKeys){
                 sql += `${keys} = '${searchKeys.searchKeys[keys]}' and `
             }
             sql = sql.slice(0, -4);
             sql += ';'
         }
+        else{
+            if (searchKeys.toFindKey){
+                sql = 'SELECT '
+                for (let column of searchKeys.toFindKey){
+                    sql += `${column}, `
+                }
+                sql = sql.slice(0, -2)
+            }
+            else{
+                sql = `select *`
+            }
+            sql += ` from ${searchKeys.table} `
+
+            if (searchKeys.searchKeys){
+                sql += 'where '
+                for (let key in searchKeys.searchKeys){
+                    sql += ` ${key} ${searchKeys.searchKeys[key]} `
+                }
+            }
+            if(searchKeys.order_by){
+                sql += ` order by ${searchKeys.order_by} `
+            }
+            if(searchKeys.limit){
+                sql += ` limit ${searchKeys.limit} `
+            }
+
+
+            sql += ';'
+        }
+        console.log(sql);
+
+
         resolve(sql);
     })
 
@@ -205,9 +244,25 @@ const executeSqlQuery= async(sql)=>{
 }
 
 
-app.post('/api/loadQuestions', (req, res) => {
+app.post('/api/loadQuestions', async (req, res) => {
     var data = req.body
-    res.send(`So you want questions for ${data.for}?`)
+    var sql = ''
+    if (data.for === 'quick'){
+        sql = await sqlGeneratorSearch(req, {
+            singleResult: false,
+            table: 'questions',
+            searchKeys:{
+                'question_id' : ' < 35'
+            },
+            toFindKey:['question_id', 'question', 'right_answer', 'option1','option2','option3'],
+            limit: 8,
+            order_by: 'rand()' 
+        })
+    }
+
+    var queryRes = await executeSqlQuery(sql);
+
+    res.send(queryRes)
 })
 
 
@@ -219,12 +274,65 @@ app.post('/api/communicate', (req, res) => {
     res.send("Hello From NodeJS")
 })
 
+app.post('/api/recordUserResponse', async (req, res) => {
+    var data = req.body,
+    responses = data.response;
+
+    console.log(data);
+    var sql = ''
+
+    sql = await sqlGeneratorInsert(req, {
+        table: 'all_response',
+        insertKeyValue: {
+            'user_id': data.userInf.user_id,
+            'response_type': data.type
+        }
+    })
+    // console.log(sql);
+
+    var queryRes = await executeSqlQuery(sql);
+
+    sql = await sqlGeneratorSearch(req,
+        {
+            singleResult: false,
+            table: 'all_response',
+            searchKeys:{
+                'user_id' : ` = '${data.userInf.user_id}' `
+            },
+            toFindKey:['all_response_id'],
+            limit: 1,
+            order_by: ' all_response_id desc' 
+        }
+        )
+
+    queryRes = await executeSqlQuery(sql);
+    
+    // console.log(queryRes[0].all_response_id);
+
+    // console.log(queryRes);
+
+    var all_response_id = queryRes[0].all_response_id; // need to determine this
+
+    for (let questionID in responses){
+        sql = await sqlGeneratorInsert(req, {
+            table: 'question_answer',
+            insertKeyValue: {
+                'question_id': questionID,
+                'answered_question': responses[questionID],
+                'all_response_id': all_response_id
+            }
+        })
+        await executeSqlQuery(sql);
+    }
 
 
-app.post('/api/requestLogin', (req, res) => {
+    res.send(String(all_response_id))
+})
+
+app.post('/api/requestLogin', async (req, res) => {
     console.log('Request received for admin Login')
 
-    let data = req.body
+    let data = await req.body
     console.log(req.body)
     if (Object.keys(data).length === 0) {
         res.send("0")
@@ -240,6 +348,33 @@ app.post('/api/requestLogin', (req, res) => {
         sqlQuery(sql, res, true)
 
     }
+})
+
+app.post('/api/getResponse', async(req, res)=>{
+    var data = await req.body;
+    console.log(`\nGenerating user response\n`);
+    // console.log(data);
+
+    var all_response_id = data.all_response_id // need to determine this
+
+    var sql =  `select q.question, q.right_answer, case
+	when qa.answered_question = 0 then q.right_answer
+    when qa.answered_question = 1 then q.option1
+    when qa.answered_question = 2 then q.option2
+    else q.option3
+    end answered_option, 
+    if(qa.answered_question = 0, 'true', 'false') correct
+    from question_answer qa
+    inner join questions q on q.question_id = qa.question_id
+    inner join all_response ar on qa.all_response_id = ar.all_response_id
+    inner join users u on u.user_id = ar.user_id where ar.all_response_id = ${all_response_id};`;
+
+
+    var queryRes = await executeSqlQuery(sql);
+
+    res.send(queryRes)
+
+
 })
 
 

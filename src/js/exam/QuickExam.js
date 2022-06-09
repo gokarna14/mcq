@@ -23,6 +23,7 @@ const QuickExam = (props)=>{
                         path={"/QuickExamMCQ"}
                         element={<McqSection
                             type={'quick'}
+                            universalProps={props.examProps.universalProps}
                         ></McqSection>}
                     ></Route>
                 </Routes>
