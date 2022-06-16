@@ -5,11 +5,25 @@ import LoginSignUpToContinue from "../loginSignUp/LoginSignUpToContinue";
 import { useEffect } from "react";
 import LoadingModal from "../templates/LoadingModal";
 import { useState } from "react";
+import Result from "./Result";
+
 
 const MyProgress = (props)=>{
 
     const [showLoading, setShowLoading] = useState(true)
     const [userExamRecords, setUserExamRecords] = useState([]);
+    const [fullResponse, setFullResponse] = useState([])
+    const [score, setScore] = useState(0)
+    const [numOfQuestions, setNumOfQuestions] = useState(0)
+    const [showFullProgress, setShowFullProgress] = useState(false)
+
+    const sortSign =   
+    <>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-up" viewBox="0 0 16 16">
+            <path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.498.498 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707V12.5zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
+        </svg>
+    </>
+    
 
     const examType = {
         'quick' : 'Quick Exam'
@@ -32,6 +46,29 @@ const MyProgress = (props)=>{
         }
     }
 
+    const viewFullProgress=(response_id, numOfQns)=>{
+        console.log(props);
+        axios.post('/api/getResponseAndScore', {
+            userInf: props.universalProps.userInfuserInf,
+            all_response_id: response_id
+        }).then(
+            response=>{
+                // console.log(response.data); // todo: generate result
+                setFullResponse(response.data.response);
+                return response.data.score;
+            }
+        )
+        .then(
+            score_=>{
+                setScore(score_)
+            }
+        )
+
+        setNumOfQuestions(numOfQns);
+        setShowFullProgress(true);
+    }
+
+
     useEffect(()=>{
         if (props.examProps.universalProps.userLoggedIn){
             console.log("On PROGRESS");
@@ -39,7 +76,7 @@ const MyProgress = (props)=>{
                 userInf: props.examProps.universalProps.userInf
             }).then(
                 res=>{
-                    // console.log(res.data);
+                    console.log(res.data);
                     setUserExamRecords(res.data);
                 }
             )
@@ -61,22 +98,41 @@ const MyProgress = (props)=>{
                     <td>{examRecord.score}</td>
                     <td>{fullMarks[examRecord.response_type]}</td>
                     <td>{(examRecord.score/fullMarks[examRecord.response_type])*100} %</td>
+                    <td>
+                        <button
+                            onClick={()=>{
+                                viewFullProgress(examRecord.all_response_id, fullMarks[examRecord.response_type])
+                            }}
+                        >
+                            See Full data
+                        </button>
+                    </td>
                 </tbody>
                 </>
             )
         }
     )
 
+    const sort=(what)=>{
+
+    }
+
     const allExamRecords=( userExamRecords.length > 0 ?
     <table className="table">
         <thead>
             <tr>
-                <th>Exam Type</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Score</th>
-                <th>Full Mark</th>
-                <th>Correct</th>
+                <th>Exam Type <span>{sortSign}</span>
+                </th>
+                <th>Date <span>{sortSign}</span>
+                </th>
+                <th>Time <span>{sortSign}</span>
+                </th>
+                <th>Score <span>{sortSign}</span>
+                </th>
+                <th>Full Mark <span>{sortSign}</span>
+                </th>
+                <th>Correct <span>{sortSign}</span>
+                </th>
                 <th>See Full Record</th>
             </tr>
         </thead>
@@ -97,6 +153,8 @@ const MyProgress = (props)=>{
     
         
     )
+
+    // console.log(props);
 
     return(
         <>
@@ -121,6 +179,19 @@ const MyProgress = (props)=>{
             }
             
             {allExamRecords}
+
+
+
+           {showFullProgress && <Result
+                    fullResponse = {fullResponse}
+                    universalProps = {props.universalProps}
+                    numberOfQuestion = {numOfQuestions}
+                    setShowResult = {setShowFullProgress}
+                    showResult={showFullProgress}
+                    score={score}
+                ></Result>}
+
+            
         </>
     )
 

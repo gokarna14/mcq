@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Modal from "react-modal/lib/components/Modal";
 import Timer from "./Timer";
 import LoadingModal from "../templates/LoadingModal";
+import Emphasize from "../animations/Emphasize";
+import Result from "./Result";
 
 
 const McqSection=(props)=>{
@@ -58,7 +60,12 @@ const McqSection=(props)=>{
                         response=>{
                             // console.log(response.data); // todo: generate result
                             setFullResponse(response.data.response);
-                            setScore(response.data.score)
+                            return response.data.score;
+                        }
+                    )
+                    .then(
+                        score_=>{
+                            setScore(score_)
                         }
                     )
                 }
@@ -100,9 +107,10 @@ const McqSection=(props)=>{
       };
     
     const handleTimeOff=()=>{
-        console.log('Time Up !');
+        closeModal();
     }
 
+        console.log( props.numberOfQuestion);
     
 
     const questionLoop = questions.map(
@@ -171,31 +179,6 @@ const McqSection=(props)=>{
             }
     </div>
     
-    const resultDisplay = // get this mf into separate js
-    <>
-            {
-                fullResponse.map(
-                    responseSet=>{
-                        return(
-                            <>
-                                <b>{responseSet.question}</b>
-                                
-                                <br />
-                                <i>Your Response: </i>
-                                {responseSet.answered_option}
-                                <br />
-                                <i>Correct Answer: </i>
-                                {responseSet.right_answer}
-                                <br />
-                                <h1>{responseSet.correct}</h1>
-                                
-                                <hr />
-                            </>
-                        )
-                    }
-                )
-            }
-    </>
 
     return(
         <>
@@ -220,9 +203,10 @@ const McqSection=(props)=>{
             >
                 <hr />
                 <Timer
-                seconds = {500}
+                seconds = {props.seconds ? props.seconds : 500}
                 handleTimeOff = {handleTimeOff}
                 style = {{position:'absolute'}}
+                text={'Your work will be automatically submitted once the time is over.'}
                 ></Timer>
                     {renderQuestion}
             <button className="btn btn-warning"
@@ -230,19 +214,17 @@ const McqSection=(props)=>{
             >Submit</button>
             </Modal>
 
-            <Modal
-                isOpen={showResult}
-                style={customStyles}
-            >
-                <hr />
-                    <h1>Result</h1>
-                    <h4>Your Final Score: {score} out of {props.numberOfQuestion}</h4>
-                    <button
-                        onClick={()=>{setShowResult(false)}}
-                    >close</button>
-                <hr />
-                {resultDisplay}
-            </Modal>
+            
+                
+
+                <Result
+                    fullResponse = {fullResponse}
+                    universalProps = {props.universalProps}
+                    numberOfQuestion = {props.numberOfQuestion}
+                    setShowResult = {setShowResult}
+                    score={score}
+                    showResult={showResult}
+                ></Result>
             
         </>
     )

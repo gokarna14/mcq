@@ -58,6 +58,8 @@ db.connect((err) => {
     }
 })
 
+//about sessions
+
 app.post("/api/sessionRemoveAuth", async (req, res) => {
     console.log(req.session.id + '\nDestroyed !');
     await executeSqlQuery(`delete from active_sessions where session_id = '${req.session.id}'`);
@@ -68,18 +70,26 @@ app.post("/api/sessionAuth", async (req, res) => {
     
     console.log('\nAuthenticating Session:');
     let data = await req.body;
-    console.log(data.userInf);
+    // console.log(data.userInf);
+
+    var user_id = -69;
     
-    // let sql =  await sqlGeneratorSearch(req, {
-    //     singleResult: true,
-    //     table: 'users',
-    //     searchKeys: data.userInf,
-    //     toFindKey: ['user_id'],
-    //     session: {}
-    // });
-    // console.log(sql);
-    // let user_id = await executeSqlQuery(sql);
-    let user_id = parseInt(data.userInf.user_id);
+    if (data.userInf){
+        user_id = parseInt(data.userInf.user_id);
+    }
+    else{
+        let sql =  await sqlGeneratorSearch(req, {
+            singleResult: true,
+            table: 'users',
+            searchKeys: data.userInf,
+            toFindKey: ['user_id'],
+            session: {}
+        });
+        // console.log(sql);
+        user_id = await executeSqlQuery(sql);
+        user_id = user_id[0]['user_id']
+
+    }
 
     
     await executeSqlQuery(`delete from active_sessions where user_id = '${user_id}';`)
@@ -345,7 +355,7 @@ app.post('/api/requestLogin', async (req, res) => {
     console.log('Request received for admin Login')
 
     let data = await req.body
-    console.log(req.body)
+    // console.log(req.body)
     if (Object.keys(data).length === 0) {
         res.send("0")
     } else {
@@ -413,6 +423,8 @@ app.post('/api/UserSignUp', (req, res) => {
     }
     sql = sql.slice(0, -2)
     sql += ");"
+
+
     console.log(sql);
     sqlQuery(sql);
 })
@@ -438,23 +450,30 @@ app.post('/api/presentOrNot', (req, res) => { //inf, what
 
 })
 
-app.post('/api/getUserInf', (req, res) => {
+app.post('/api/getUserInf', async (req, res) => {
     console.log("Request received to access user information");
     let data = req.body
     console.log(data)
 
-    var sql = "select * from users where ( ",
-        toCheck = Object.keys(data)
-
-    for (let i in toCheck) {
-        sql += toCheck[i] + " = '" + data[toCheck[i]] + "' and "
-    }
-    sql = sql.slice(0, -4)
-    sql += ");"
+    var sql = await sqlGeneratorSearch(req,
+        {
+            singleResult: false,
+            table: 'users',
+            searchKeys:{
+                email : ` = '${data.email}' and `,
+                password_: ` = '${data.password_}' and `,
+                phone_number: ` = '${data.phone_number}' `
+            },
+            // toFindKey:['question_id', 'question', 'right_answer', 'option1','option2','option3'],
+            // limit: data.numberOfQuestions,
+            // order_by: 'rand()' 
+        }
+        )
 
     console.log(sql);
 
-    sqlQuery(sql, res)
+    var queryRes = await executeSqlQuery(sql);
+    res.send(queryRes);
 })
 
 

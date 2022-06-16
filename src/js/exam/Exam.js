@@ -85,6 +85,7 @@ const Exam =(props)=>{
             path: '/myProgress/*',
             element: <MyProgress
                 examProps={examProps}
+                universalProps={examProps.universalProps}
         ></MyProgress>
         },
     ]

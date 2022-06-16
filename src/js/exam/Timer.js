@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Emphasize from "../animations/Emphasize";
 
 
 const Timer =(props)=>{
@@ -10,12 +11,9 @@ const Timer =(props)=>{
     //     }, parseInt(props.seconds)*1000)
     // })
     
-    // setTimeout(()=>{
-        // setInterval(()=>{
-        //     setSeconds(seconds - 1);
-        // }, 1000);
-    //     console.log('Time Out !');
-    // }, parseInt(props.seconds)*1000)
+    setTimeout(()=>{
+        props.handleTimeOff();
+    }, parseInt(props.seconds)*1000)
 
 
     useEffect(() => {
@@ -48,6 +46,14 @@ const Timer =(props)=>{
                 { seconds>0 ? countDown : 'Time Up !'}
                 </span>
             </div>
+            <i>
+                <b>
+                <Emphasize
+                    content={props.text}
+                ></Emphasize>
+                </b>
+            </i>
+                
         </div>
     )
 
