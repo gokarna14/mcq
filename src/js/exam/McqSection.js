@@ -197,10 +197,8 @@ const McqSection=(props)=>{
         <br />
             This is mcq section for {props.type}
             <br />
-
             {instructions}
             
-
             <Modal
                 isOpen={modalIsOpen}
                 style={customStyles}
@@ -217,9 +215,6 @@ const McqSection=(props)=>{
                     onClick={closeModal}
             >Submit</button>
             </Modal>
-            
-                
-
                 <Result
                     fullResponse = {fullResponse}
                     universalProps = {props.universalProps}
