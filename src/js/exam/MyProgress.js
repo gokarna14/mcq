@@ -26,10 +26,12 @@ const MyProgress = (props)=>{
     
 
     const examType = {
-        'quick' : 'Quick Exam'
+        'quick' : 'Quick Exam',
+        'normal' : 'Normal Exam'
     },
     fullMarks = {
-        'quick': 8
+        'quick': 8,
+        'normal': 50
     }
 
     const addFullMarkAndCorrect=(arrayOfRecord)=>{
@@ -39,7 +41,7 @@ const MyProgress = (props)=>{
             examRecord['correct%'] =  (examRecord.score/fullMarks[examRecord.response_type])*100
             temp.push(examRecord)
         }
-        // console.log(temp);
+        console.log(temp);
         setUserExamRecords(temp);
     }
 
@@ -194,7 +196,10 @@ const MyProgress = (props)=>{
                 </>
             }
             
-            {allExamRecords}
+            <div className="niceCenter">
+                {allExamRecords}
+            </div>
+
 
 
 

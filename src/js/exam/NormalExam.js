@@ -1,30 +1,33 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
+// import axios from "axios";
+import {
+    Routes,
+    Route,
+    Link
+  } from 'react-router-dom';
+
+import McqSection from "./McqSection";
 import LoginSignUpToContinue from "../loginSignUp/LoginSignUpToContinue";
 
 
 export default function NormalExam(props){
 
-    useEffect(() => {
-      props.examProps.resetExamProps();
-    }, [])
-    const [numberOfQuestions, setNumberOfQuestions] = useState(50)
-
-    const startNormalExam=()=>{
-
-        
-
-        props.examProps.loadQuestions(numberOfQuestions)
-
-
-        props.examProps.setShowQuestion(true)
-        props.examProps.setRenderResult_tf(false)
-        props.examProps.setShowExamOption(false)
-
-        console.log(props.examProps.questions);
-        console.log(props.examProps.showQuestion);
-
-    }
+    const mcqSection = (
+        <Routes>
+            <Route
+                exact
+                path={"/QuickExamMCQ"}
+                element={<McqSection
+                    type={'normal'}
+                    universalProps={props.examProps.universalProps}
+                    numberOfQuestion={
+                        props.examProps.numberOfQuestions.normalExam
+                    }
+                    seconds={1000}
+                ></McqSection>}
+            ></Route>
+        </Routes>
+)
 
 
     return(
@@ -38,41 +41,22 @@ export default function NormalExam(props){
                 </>
             }{
                 props.examProps.universalProps.userLoggedIn && 
-                <div className="loggedIn">
-                    <hr />
-                    <h3>Welcome , {props.examProps.universalProps.loggedInUser.fname} 🔥</h3>
-                    <hr />
-                    {   !props.examProps.showQuestion ?
-
-                        <button className="btn btn-primary"
-                            onClick={startNormalExam}
-                        >
-                            Take the normal exam
-                        </button>
-                        :
-                        <>
-                            {props.examProps.renderQuestion}
-                            <>
-                                <hr />
-                                <button className="btn btn-warning"
-                                    onClick={()=>
-                                        {
-                                            props.examProps.generateResult()
-                                            props.examProps.setShowQuestion(false)
-                                            props.examProps.setRenderResult_tf(true)
-                                            props.examProps.setShowExamOption(true)
-                                            console.log(props.examProps.responses)
-
-                                        }
-                                    }
-                                >
-                                    Submit and See Result
-                                </button>
-                            </>
-                        </>
-                    }
-                </div>
+                <>
                 
+
+            <h1>Section of quick Exam.</h1>
+            <br />
+            
+            <Link
+                to={'./QuickExamMCQ'} className='normalizeText'>
+                <span className='btn btn-outline-danger'>
+                    Take Normal Exam
+                </span>
+            </Link>
+
+            {mcqSection}
+
+        </>   
             }
             {props.examProps.resultRender}
         </>

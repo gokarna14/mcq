@@ -1,6 +1,7 @@
 import React from "react";
 import Emphasize from "../animations/Emphasize";
 import Modal from "react-modal/lib/components/Modal";
+import { Link } from "react-router-dom";
 
 const Result=(props)=>{
 
@@ -29,10 +30,14 @@ const Result=(props)=>{
                 <hr />
                     <h1>Result</h1>
                     <h4>Your Final Score: {props.score} out of {props.numberOfQuestion}</h4>
-                    <button
-                        onClick={()=>{props.setShowResult(false)}}
-                        className='btn btn-outline-dark'
-                    >Close</button>
+                    <form>
+                        <Link
+                            onClick={()=>{props.setShowResult(false)}}
+                            className='btn btn-outline-dark'
+                            refresh="true"
+                            to={props.fromMcq ? "./.." : ""}
+                        >Close</Link>
+                    </form>
                 <hr />
                 {
                     props.fullResponse.map(

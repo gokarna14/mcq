@@ -55,6 +55,7 @@ const Exam =(props)=>{
         universalProps: props.universalProps,
         numberOfQuestions:{
             quickExam: 8,
+            normalExam: 50
         }
         
     }

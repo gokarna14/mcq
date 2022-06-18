@@ -1,20 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import {
-    BrowserRouter,
     Routes,
     Route,
     Link
   } from 'react-router-dom';
 
-import Emphasize from "../animations/Emphasize";
 import McqSection from "./McqSection";
 
 const QuickExam = (props)=>{
-
-    const examRequest=()=>{
-
-    }
 
     const mcqSection = (
                 <Routes>
@@ -27,10 +21,13 @@ const QuickExam = (props)=>{
                             numberOfQuestion={
                                 props.examProps.numberOfQuestions.quickExam
                             }
+                            seconds={300}
                         ></McqSection>}
                     ></Route>
                 </Routes>
     )
+
+    
         
     return(
         <>

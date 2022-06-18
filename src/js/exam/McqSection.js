@@ -6,8 +6,13 @@ import LoadingModal from "../templates/LoadingModal";
 import Emphasize from "../animations/Emphasize";
 import Result from "./Result";
 
-
 const McqSection=(props)=>{
+
+
+    const seconds = {
+        'quick' : 300,
+        'normal': 1000
+    }
 
     const [modalIsOpen, setIsOpen] = useState(false);
     const [questions, setQuestions] = useState([]);
@@ -16,6 +21,7 @@ const McqSection=(props)=>{
     const [showResult, setShowResult] = useState(false);
     const [displayLoadingModal, setDisplayLoadingModal] = useState(false)
     // const [responseID, setResponseID] = useState(null)
+    const [showInstructions, setShowInstructions] = useState(true)
     const [score, setScore] = useState(0)
 
     function openModal() {
@@ -24,7 +30,7 @@ const McqSection=(props)=>{
         setQuestions([]);
         axios.post('/api/loadQuestions', {
             for: props.type,
-            limit: props.numberOfQuestions
+            limit: props.numberOfQuestion
         })
         .then(
             res=>{
@@ -34,6 +40,7 @@ const McqSection=(props)=>{
                 // console.log(questions);
             }
         )
+        setShowInstructions(false);
     }
 
     const closeModal=()=>{
@@ -58,7 +65,7 @@ const McqSection=(props)=>{
                         all_response_id: response_id
                     }).then(
                         response=>{
-                            // console.log(response.data); // todo: generate result
+                        
                             setFullResponse(response.data.response);
                             return response.data.score;
                         }
@@ -82,27 +89,12 @@ const McqSection=(props)=>{
 
     const customStyles = {
         content: {
-        //   top: '50%',
-        //   left: '50%',
-        //   right: 'auto',
-        //   bottom: 'auto',
-        //   marginRight: '-50%',
-        //   transform: 'translate(-50%, -50%)',
             marginTop: '2%',
             height: '100%'
         },
         overlay:{
-            // position: "fixed",
-            // display: "flex",
-            // justifyContent: "center",
-            // top: "0",
-            // left: "0",
-            // width: "100%",
-            // height: "100%",
             backgroundColor: "rgba(0,255,255,0.3)",
-            // zIndex: "1000",
             overflowY: "scroll",
-            // overflowX: 'scroll'
           }
       };
     
@@ -178,7 +170,22 @@ const McqSection=(props)=>{
 
             }
     </div>
+
     
+
+    const instructions=
+    <Modal
+        isOpen={showInstructions}
+        style={customStyles}
+    >
+        <h4>What is quick exam?</h4>
+        <button className="btn btn-danger"
+                    onClick={openModal}
+            >
+                Start the {props.type} exam.
+            </button>
+        
+    </Modal>
 
     return(
         <>
@@ -191,11 +198,8 @@ const McqSection=(props)=>{
             This is mcq section for {props.type}
             <br />
 
-            <button className="btn btn-danger"
-                    onClick={openModal}
-            >
-                Start the {props.type} exam.
-            </button>
+            {instructions}
+            
 
             <Modal
                 isOpen={modalIsOpen}
@@ -213,7 +217,6 @@ const McqSection=(props)=>{
                     onClick={closeModal}
             >Submit</button>
             </Modal>
-
             
                 
 
@@ -224,6 +227,7 @@ const McqSection=(props)=>{
                     setShowResult = {setShowResult}
                     score={score}
                     showResult={showResult}
+                    fromMcq={true}
                 ></Result>
             
         </>
