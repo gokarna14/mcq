@@ -7,6 +7,7 @@ const Result=(props)=>{
 
     const customStyles = {
         content: {
+            
             marginTop: '2%',
             right: '30%',
             height: '100%',
