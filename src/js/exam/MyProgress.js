@@ -40,15 +40,19 @@ const MyProgress = (props)=>{
 
     const addFullMarkAndCorrect=(arrayOfRecord)=>{
         var temp = [], data = [];
+        let quick = 0, normal = 0;
         for (var examRecord of arrayOfRecord){
-            examRecord['fullMark'] = fullMarks[examRecord.response_type]
-            examRecord['correct%'] =  (examRecord.score/fullMarks[examRecord.response_type])*100
+            examRecord.response_type === 'quick' ? quick++ : normal ++;
+            examRecord['fullMark'] = fullMarks[examRecord.response_type];
+            examRecord['correct%'] =  (examRecord.score/fullMarks[examRecord.response_type])*100;
             temp.push(examRecord)
             data.push(
                 {
-                    name: examRecord.ts,
-                    correct: examRecord['correct%'],
-                    score: examRecord.score
+                    name: `${examRecord.response_type.toUpperCase()} Exam\nAttempt Number ${examRecord.response_type === 'quick' ? quick : normal}`,
+                    // name: examRecord.response_type
+                    'correct%': examRecord['correct%'],
+                    score: examRecord.score,
+                    type: examRecord.response_type.toUpperCase()
                 }
             )
 
@@ -206,16 +210,17 @@ const MyProgress = (props)=>{
                 <hr />
                     <h3>Welcome , {props.examProps.universalProps.loggedInUser.fname} 🔥</h3>
                 <hr />
-                </>
-            }
             
             <div className="niceCenter">
                 {allExamRecords}
             </div>
             
+           { dataVisualize.length > 0 &&
             <LineChartz
                 data={dataVisualize}
-            ></LineChartz>
+            ></LineChartz>}
+        </>
+            }
 
 
 
