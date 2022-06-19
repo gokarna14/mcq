@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import LoadingModal from "../templates/LoadingModal";
 import { useState } from "react";
 import Result from "./Result";
+import LineChartz from "../chart/LineChartz";
+
 
 
 const MyProgress = (props)=>{
@@ -17,6 +19,8 @@ const MyProgress = (props)=>{
     const [numOfQuestions, setNumOfQuestions] = useState(0)
     const [showFullProgress, setShowFullProgress] = useState(false)
     const [nowSorted, setNowSorted] = useState('ts')
+
+    const [dataVisualize, setDataVisualize] = useState([])
 
     const sortSign =   <>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-up" viewBox="0 0 16 16">
@@ -35,14 +39,23 @@ const MyProgress = (props)=>{
     }
 
     const addFullMarkAndCorrect=(arrayOfRecord)=>{
-        var temp = []
+        var temp = [], data = [];
         for (var examRecord of arrayOfRecord){
             examRecord['fullMark'] = fullMarks[examRecord.response_type]
             examRecord['correct%'] =  (examRecord.score/fullMarks[examRecord.response_type])*100
             temp.push(examRecord)
+            data.push(
+                {
+                    name: examRecord.ts,
+                    correct: examRecord['correct%'],
+                    score: examRecord.score
+                }
+            )
+
         }
-        console.log(temp);
+        console.log(data);
         setUserExamRecords(temp);
+        setDataVisualize(data);
     }
 
     const refresh=()=>{
@@ -199,6 +212,10 @@ const MyProgress = (props)=>{
             <div className="niceCenter">
                 {allExamRecords}
             </div>
+            
+            <LineChartz
+                data={dataVisualize}
+            ></LineChartz>
 
 
 
@@ -210,9 +227,7 @@ const MyProgress = (props)=>{
                     setShowResult = {setShowFullProgress}
                     showResult={showFullProgress}
                     score={score}
-                ></Result>}
-
-            
+                ></Result>}            
         </>
     )
 
