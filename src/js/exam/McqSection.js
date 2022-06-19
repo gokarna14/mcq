@@ -6,6 +6,7 @@ import LoadingModal from "../templates/LoadingModal";
 import Emphasize from "../animations/Emphasize";
 import Result from "./Result";
 import { Link } from "react-router-dom";
+import { JSXExamDescription } from "../essentials/exam/examEssentials";
 
 const McqSection=(props)=>{
 
@@ -168,29 +169,6 @@ const McqSection=(props)=>{
 
             }
     </div>
-
-    const JSXExamDescription = {
-        'quick': 
-        <>
-            <Emphasize
-                content=
-                {<>
-                    This is the quick exam.
-                </>}
-            >
-            </Emphasize>
-        </>,
-        'normal': 
-        <>
-            <Emphasize
-                content=
-                {<>
-                    {props.type}
-                </>}
-            >
-            </Emphasize>
-        </>,
-    }
     
 
     const instructions=
