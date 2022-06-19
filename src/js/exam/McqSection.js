@@ -5,6 +5,7 @@ import Timer from "./Timer";
 import LoadingModal from "../templates/LoadingModal";
 import Emphasize from "../animations/Emphasize";
 import Result from "./Result";
+import { Link } from "react-router-dom";
 
 const McqSection=(props)=>{
 
@@ -34,10 +35,7 @@ const McqSection=(props)=>{
         })
         .then(
             res=>{
-                // console.log(res.data);
                 setQuestions(res.data);
-                // console.log(props.universalProps);
-                // console.log(questions);
             }
         )
         setShowInstructions(false);
@@ -171,6 +169,28 @@ const McqSection=(props)=>{
             }
     </div>
 
+    const JSXExamDescription = {
+        'quick': 
+        <>
+            <Emphasize
+                content=
+                {<>
+                    This is the quick exam.
+                </>}
+            >
+            </Emphasize>
+        </>,
+        'normal': 
+        <>
+            <Emphasize
+                content=
+                {<>
+                    {props.type}
+                </>}
+            >
+            </Emphasize>
+        </>,
+    }
     
 
     const instructions=
@@ -183,7 +203,15 @@ const McqSection=(props)=>{
                     onClick={openModal}
             >
                 Start the {props.type} exam.
-            </button>
+        </button>
+                <hr />
+                {JSXExamDescription['quick']}
+
+                <Link
+                    to={'./..'}
+                    className='btn btn-primary'
+                >Cancel
+                </Link>
         
     </Modal>
 

@@ -15,7 +15,13 @@ const CompeteExam = (props)=>{
             }{
                 props.examProps.universalProps.userLoggedIn && 
                 <>
-                    <h3>Welcome , {props.examProps.universalProps.loggedInUser.fname} 🔥</h3>
+                    <hr />
+                        <h3>Welcome , {props.examProps.universalProps.loggedInUser.fname} 🔥</h3>
+                    <hr />
+                    Coming Soon ...
+
+
+
                 </>
             }
         </>
