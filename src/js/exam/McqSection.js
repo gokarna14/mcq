@@ -6,7 +6,7 @@ import LoadingModal from "../templates/LoadingModal";
 import Emphasize from "../animations/Emphasize";
 import Result from "./Result";
 import { Link } from "react-router-dom";
-import { JSXExamDescription } from "../essentials/exam/examEssentials";
+// import { JSXExamDescription } from "../essentials/exam/examEssentials";
 
 const McqSection=(props)=>{
 
@@ -170,7 +170,39 @@ const McqSection=(props)=>{
             }
     </div>
     
-
+    const JSXExamDescription = {
+        'quick': 
+        <>
+            <Emphasize
+                content=
+                {<>
+                    This is the quick exam.
+                </>}
+            >
+            </Emphasize>
+            <div className="jumbotron">
+                <p className="display-6">
+                    <i>
+                        <b>
+                            What kind of questions should you expect from Quick Exam?
+                        </b>
+                    </i>
+                </p>
+            </div>
+            
+        </>,
+        'normal': 
+        <>
+            <Emphasize
+                content=
+                {<>
+                    hello
+                </>}
+            >
+            </Emphasize>
+        </>,
+    }
+    
     const instructions=
     <Modal
         isOpen={showInstructions}
