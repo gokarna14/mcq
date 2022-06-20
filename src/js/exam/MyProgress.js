@@ -218,6 +218,7 @@ const MyProgress = (props)=>{
            { dataVisualize.length > 0 &&
             <LineChartz
                 data={dataVisualize}
+                xlabel={'TIME'}
             ></LineChartz>}
         </>
             }

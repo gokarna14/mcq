@@ -14,23 +14,6 @@ import {
     AreaChart,
   } from 'recharts';
 
-
-  const data = [
-    {name: 'normal', correct: 32, score: 16},
-    {name: 'normal1', correct: 32, score: 16},
-    {name: 'normal2', correct: 32, score: 16},
-    {name: 'normal3', correct: 32, score: 16},
-    {name: 'normal4', correct: 32, score: 16},
-    {name: 'normal6', correct: 32, score: 16},
-    {name: 'normal7', correct: 32, score: 16},
-    {name: 'normal8', correct: 32, score: 16},
-    {name: 'normal9', correct: 0, score: 0},
-    {name: 'quick9', correct: 0, score: 0},
-    {name: 'quick8', correct: 25, score: 2},
-    {name: 'quick7', correct: 0, score: 0},
-    {name: 'quick6', correct: 50, score: 4},5
-  ];
-
   
   const LineChartz=(props)=>{
     
@@ -71,17 +54,16 @@ import {
               margin={{
                 top: 10,
                 right: 30,
-                left: 0,
-                bottom: 0,
+                left: 10,
+                bottom: 10,
               }}
             >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={false} label={'Time'}/>
+                <CartesianGrid strokeDasharray="1" />
+                <XAxis dataKey="name" tick={false} label={props.xlabel}/>
                 <YAxis />
                 <Tooltip />
                 <Area type="monotone" dataKey="score" stackId="1" stroke="#8884d8" fill="#8884d8" />
                 <Area type="monotone" dataKey="correct%" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
-                <Area type="monotone" dataKey="amt" stackId="1" stroke="#ffc658" fill="#ffc658" />
               </AreaChart>
             </div>}
       {/* </ResponsiveContainer> */}
