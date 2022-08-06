@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 
 const McqSection=(props)=>{
 
-
     const seconds = {
         'quick' : 300,
         'normal': 1000
